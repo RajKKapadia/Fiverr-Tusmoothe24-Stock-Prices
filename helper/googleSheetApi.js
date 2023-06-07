@@ -32,7 +32,7 @@ const getSymbolCurrentPrice = async (symbol) => {
     };
 
    if (price == undefined) {
-    return `I am not sure I have the price for the symbol ${symbol}.`
+    return `We don't have the price of this security.`
    } else {
     return `The current price of ${symbol} is ${price}.`
    }
@@ -76,9 +76,9 @@ const getSymbolFuturePrice = async (symbol, target) => {
     };
 
    if (bearish == undefined || bullish == undefined) {
-    return `I am not sure I have the ${target} future price for the symbol ${symbol}.`
+    return `We don't have the ${target} price of this security..`;
    } else {
-    return `The ${target} future price of ${symbol}, for bullish ${bullish} and for bearish ${bearish}.`
+    return `The ${target} future price of ${symbol}, for bullish ${bullish} and for bearish ${bearish}.`;
    }
 };
 
