@@ -54,7 +54,7 @@ const getSymbolFuturePrice = async (symbol, target) => {
     if (target === 'daily') {
         sheet = doc.sheetsByTitle['Daily Plays Target Price'];
     } else if (target === 'weekly') {
-        sheet = doc.sheetsByTitle['Weekly Stock Target Prices'];
+        sheet = doc.sheetsByTitle['Weekly Target Price'];
     } else {
         sheet = doc.sheetsByTitle['Monthly Plays Target Price'];
     }

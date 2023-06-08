@@ -9,10 +9,11 @@ const handleuserAsksTargetPrice = async (req) => {
 
     Object.keys(parameters).forEach(k => {
         if (PARAMS.includes(k) && parameters[k] !== 'None') {
-            console.log(k);
             symbol = parameters[k];
         }
     });
+
+    console.log(symbol);
 
     let response = undefined;
 
