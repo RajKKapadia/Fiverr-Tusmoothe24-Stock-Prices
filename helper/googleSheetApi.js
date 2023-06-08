@@ -32,9 +32,9 @@ const getSymbolCurrentPrice = async (symbol) => {
     };
 
    if (price == undefined) {
-    return `We don't have the price of this security.`
+    return `We don't have the price of this security.`;
    } else {
-    return `The current price of ${symbol} is ${price}.`
+    return `The current price of ${symbol} is ${price}.`;
    }
 };
 
@@ -54,12 +54,10 @@ const getSymbolFuturePrice = async (symbol, target) => {
     if (target === 'daily') {
         sheet = doc.sheetsByTitle['Daily Plays Target Price'];
     } else if (target === 'weekly') {
-        sheet = doc.sheetsByTitle['Weekly Stock Target Prices']   
+        sheet = doc.sheetsByTitle['Weekly Stock Target Prices'];
     } else {
-        sheet = doc.sheetsByTitle['Monthly Plays Target Price']
+        sheet = doc.sheetsByTitle['Monthly Plays Target Price'];
     }
-
-    console.log(sheet.a1SheetName);
 
     let rows = await sheet.getRows();
 
@@ -82,7 +80,8 @@ const getSymbolFuturePrice = async (symbol, target) => {
    }
 };
 
-// getSymbolFuturePrice('AAPL', 'weekly')
+// // Test run of the function
+// getSymbolCurrentPrice('ABBV')
 //     .then((res) => {
 //         console.log(res);
 //     })

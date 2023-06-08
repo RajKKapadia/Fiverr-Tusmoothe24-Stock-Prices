@@ -1,13 +1,26 @@
 const { getSymbolFuturePrice } = require('../helper/googleSheetApi');
+const { PARAMS } = require('../helper/constant');
 
 const handleuserAsksTargetPrice = async (req) => {
-    let symbol = req.body.queryResult.parameters['stock-symbol'];
     let target = req.body.queryResult.parameters['target-period'];
 
-    console.log(symbol);
-    console.log(target);
+    let parameters = req.body.queryResult.parameters;
+    let symbol = undefined;
 
-    let response = await getSymbolFuturePrice(symbol, target);
+    Object.keys(parameters).forEach(k => {
+        if (PARAMS.includes(k) && parameters[k] !== 'None') {
+            console.log(k);
+            symbol = parameters[k];
+        }
+    });
+
+    let response = undefined;
+
+    if (symbol == undefined) {
+        response = `We don't have the price of this security.`;
+    } else {
+        response = await getSymbolFuturePrice(symbol, target);
+    }
 
     let responseText = {
         fulfillmentText: response
