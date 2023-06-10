@@ -8,7 +8,8 @@ const CREDENTIALS = JSON.parse(process.env.CREDENTIALS);
 
 const getSymbolCurrentPrice = async (symbol) => {
 
-    symbol = symbol.toUpperCase();
+    try {
+        symbol = symbol.toUpperCase();
 
     await doc.useServiceAccountAuth({
         client_email: CREDENTIALS.client_email,
@@ -17,7 +18,7 @@ const getSymbolCurrentPrice = async (symbol) => {
 
     await doc.loadInfo();
 
-    let sheet = doc.sheetsByTitle['Curent Prices']
+    let sheet = doc.sheetsByTitle['Curent Prices'];
 
     let rows = await sheet.getRows();
 
@@ -31,16 +32,21 @@ const getSymbolCurrentPrice = async (symbol) => {
         }
     };
 
-   if (price == undefined) {
-    return `We don't have the price of this security.`;
-   } else {
-    return `The current price of ${symbol} is ${price}.`;
-   }
+    if (price == undefined) {
+        return `We don't have the price of this security.`;
+    } else {
+        return `The current price of ${symbol} is ${price}.`;
+    }
+    } catch (error) {
+        console.error(`Error at getSymbolCurrentPrice -> ${error}`);
+        return `We don't have the price of this security.`;
+    }
 };
 
 const getSymbolFuturePrice = async (symbol, target) => {
 
-    symbol = symbol.toUpperCase();
+    try {
+        symbol = symbol.toUpperCase();
 
     await doc.useServiceAccountAuth({
         client_email: CREDENTIALS.client_email,
@@ -73,15 +79,100 @@ const getSymbolFuturePrice = async (symbol, target) => {
         }
     };
 
-   if (bearish == undefined || bullish == undefined) {
-    return `We don't have the ${target} price of this security..`;
-   } else {
-    return `The ${target} future price of ${symbol}, for bullish ${bullish} and for bearish ${bearish}.`;
-   }
+    if (bearish == undefined || bullish == undefined) {
+        return `We don't have the ${target} price of this security..`;
+    } else {
+        return `The ${target} future price of ${symbol}, for bullish ${bullish} and for bearish ${bearish}.`;
+    }
+    } catch (error) {
+        console.error(`Error at getSymbolFuturePrice -> ${error}`);
+        return `We don't have the ${target} price of this security..`;
+    }
 };
 
-// // Test run of the function
-// getSymbolCurrentPrice('ABBV')
+const getEarningCalendar = async (date) => {
+
+    try {
+        await doc.useServiceAccountAuth({
+            client_email: CREDENTIALS.client_email,
+            private_key: CREDENTIALS.private_key
+        });
+    
+        await doc.loadInfo();
+    
+        let sheet = doc.sheetsByTitle['Earnings Calendar'];
+    
+        let rows = await sheet.getRows();
+    
+        let flag = false;
+
+        let tempString = '';
+    
+        for (let index = 0; index < rows.length; index++) {
+            let row = rows[index];
+            if (row.earnings_date === date) {
+                tempString += `${row.company} -> EPS ${row.eps}, EPS Forcast ${row.eps_forecast}, Revenue ${row.revenue} and Earning Forcast ${row.earnings_forecast}.\n\n`;
+                flag = true;
+            }
+        };
+
+        let outString = '';
+
+        if (flag) {
+            outString += `On ${date} the earnings are:\n\n${tempString.slice(0, -2)}.`;
+        } else {
+            outString += `We don't have any data for ${date}.`;
+        }
+    
+        return outString;
+    } catch (error) {
+        console.error(`Error at getEarningCalendar -> ${error}`);
+        return `We don't have any data for ${date}.`;
+    }
+};
+
+const getEconomicCalendar = async (date, currencyName) => {
+
+    try {
+        await doc.useServiceAccountAuth({
+            client_email: CREDENTIALS.client_email,
+            private_key: CREDENTIALS.private_key
+        });
+    
+        await doc.loadInfo();
+    
+        let sheet = doc.sheetsByTitle['Economic Calendar'];
+    
+        let rows = await sheet.getRows();
+    
+        let flag = false;
+
+        let tempString = '';
+    
+        for (let index = 0; index < rows.length; index++) {
+            let row = rows[index];
+            if (row.date === date && row.currency === currencyName) {
+                tempString += `Time ${row.time}, Event ${row.event}, Actual ${row.actual}, Forecast ${row.forecast} and Previous ${row.previous}.\n\n`;
+                flag = true;
+            }
+        };
+
+        let outString = '';
+
+        if (flag) {
+            outString += `On ${date} the economics are:\n\n${tempString.slice(0, -2)}.`;
+        } else {
+            outString += `We don't have any data for ${date}.`;
+        }
+    
+        return outString;
+    } catch (error) {
+        console.error(`Error at getEarningCalendar -> ${error}`);
+        return `We don't have any data for ${date}.`;
+    }
+};
+
+// getEconomicCalendar('Monday, June 5, 2023', 'USD')
 //     .then((res) => {
 //         console.log(res);
 //     })
@@ -91,5 +182,7 @@ const getSymbolFuturePrice = async (symbol, target) => {
 
 module.exports = {
     getSymbolCurrentPrice,
-    getSymbolFuturePrice
+    getSymbolFuturePrice,
+    getEarningCalendar,
+    getEconomicCalendar
 };

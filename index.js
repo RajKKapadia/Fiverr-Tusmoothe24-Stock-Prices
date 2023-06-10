@@ -18,6 +18,8 @@ webApp.get('/', (req, res) => {
 const { handlegetSymbolPrice } = require('./controllers/getSymbolPrice');
 const { handleInputUnknown } = require('./controllers/inputUnknown');
 const { handleuserAsksTargetPrice } = require('./controllers/userAsksTargetPrice');
+const { handleEconomicCalendar } = require('./controllers/economicCalendar');
+const { handleEarningCalendar } = require('./controllers/earningCalendar');
 
 webApp.post('/dialogflow', async (req, res) => {
 
@@ -31,7 +33,12 @@ webApp.post('/dialogflow', async (req, res) => {
         responseText = await handlegetSymbolPrice(req);
     } else if (action === 'userAsksTargetPrice') {
         responseText = await handleuserAsksTargetPrice(req);
-    } else {
+    } else if (action === 'economicCalendar') {
+        responseText = await handleEconomicCalendar(req);
+    } else if (action === 'earningCalendar') {
+        responseText = await handleEarningCalendar(req);
+    }
+    else {
         responseText['fulfillmentText'] = `No handler for the action ${action}.`
     }
     res.send(responseText);
